@@ -12,7 +12,7 @@ Please see the Vindicia API documentation for more information:
 
 """
 
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 
 USER = None
 """The SOAP api client user to authenticated against."""
@@ -33,6 +33,8 @@ SOCKET_TIMEOUT_SECONDS = None
 """The number of seconds after which to timeout requests to the Vindicia API.
 If unspecified, the global default timeout is used."""
 
+DEBUG = False
+"""Flag to enable debugging output to the console"""
 
 VIN_SOAP_HOST = None
 
@@ -241,6 +243,59 @@ class Account(BaseWSDL):
         return ret
 
 
+class Product(BaseWSDL):
+    _list_attr = [
+        'VID',
+        'merchantProductId',
+        'descriptions',
+        'status',
+        'nameValues',
+        'prices',
+        'defaultBillingPlan',
+        'merchantEntitlementIds',
+        'taxClassification',
+        'defaultRatePlan',
+        'endOfLifeTimestamp',
+        'billingStatementIdentifier',
+        'creditGranted',
+        'bundledProducts'
+    ]
+
+    def __init__(self, **kwargs):
+        super(Product, self).__init__(**kwargs)
+
+    def fetch_all(self):
+        auth = get_authentication()
+
+        call_params = {
+            'auth': auth,
+        }
+
+        inputs = {
+            'parameters': call_params
+        }
+
+        soap = CallClient()
+        ret = soap.call('Product', 'fetchAll', inputs)
+        return ret
+
+    def fetch_by_merchant_product_id(self, merchant_product_id):
+        auth = get_authentication()
+
+        call_params = {
+            'auth': auth,
+            'merchantProductId': merchant_product_id
+        }
+
+        inputs = {
+            'parameters': call_params
+        }
+
+        soap = CallClient()
+        ret = soap.call('Product', 'fetchByMerchantProductId', inputs)
+        return ret
+
+
 class BillingPlan(BaseWSDL):
     _list_attr = [
         'VID',
@@ -419,6 +474,122 @@ class PaymentMethod(BaseWSDL):
         ret = soap.call('PaymentMethod', 'fetchByWebSessionVid', inputs)
         return ret
 
+    def fetch_by_merchant_payment_method_id(self, payment_method_id):
+        auth = get_authentication()
+
+        call_params = {
+            'auth': auth,
+            'paymentMethodId': payment_method_id,
+        }
+
+        inputs = {
+            'parameters': call_params
+        }
+
+        soap = CallClient()
+
+        ret = soap.call('PaymentMethod', 'fetchByMerchantPaymentMethodId', inputs)
+        return ret
+
+
+class PaymentProvider(BaseWSDL):
+    _list_attr = [
+        "authCurrencyOverride",
+        "authExpirationDays",
+        "disputeAddress",
+        "disputeEmail",
+        "disputeUri",
+        "name",
+        "nameValues"
+    ]
+
+    def __init__(self, **kwargs):
+        super(PaymentProvider, self).__init__(**kwargs)
+
+
+class HostedPage(BaseWSDL):
+    _list_attr = [
+        "countryCode",
+        "language",
+        "paymentProvider",
+        "processorPaymentMethodId",
+        "returnUrl"
+    ]
+
+    def __init__(self, **kwargs):
+        super(HostedPage, self).__init__(**kwargs)
+
+
+class AutoBillItem(BaseWSDL):
+    _list_attr = {'4.3': [
+        "merchantAutoBillItemId",
+        "VID",
+        "index",
+        "product",
+        "priceBasis",
+        "amount",
+        "currency",
+        "ratePlan",
+        "eventInitializer",
+        "token",
+        "cycles",
+        "cyclesRemaining",
+        "startTimestamp",
+        "endTimestamp",
+        "startDate",
+        "campaignCode",
+        "campaignId"
+    ],
+    '8.0': [
+        "merchantAutoBillItemId",
+        "VID",
+        "index",
+        "product",
+        "amount",
+        "currency",
+        "ratePlan",
+        "eventInitializer",
+        "token",
+        "cycles",
+        "cyclesRemaining",
+        "addedDate",
+        "removedDate",
+        "startDate",
+        "campaignCode",
+        "campaignId",
+        "transitionedFromMerchantAutoBillItemId",
+        "transitionedToMerchantAutoBillItemId",
+        "transitionedFromAutoBillItemVid",
+        "transitionedToAutoBillItemVid"
+    ],
+    '13.0': [
+        "merchantAutoBillItemId",
+        "VID",
+        "index",
+        "product",
+        "amount",
+        "currency",
+        "ratePlan",
+        "nameValues",
+        "quantity",
+        "token",
+        "cycles",
+        "cyclesRemaining",
+        "addedDate",
+        "removedDate",
+        "startDate",
+        "campaignCode",
+        "campaignId",
+        "transitionedFromMerchantAutoBillItemId",
+        "transitionedToMerchantAutoBillItemId",
+        "transitionedFromAutoBillItemVid",
+        "transitionedToAutoBillItemVid"
+    ]
+    }
+
+    def __init__(self, **kwargs):
+        super(AutoBillItem, self).__init__(**kwargs)
+
 
 class AutoBill(BaseWSDL):
     _list_attr = {'4.3': [
@@ -482,13 +653,45 @@ class AutoBill(BaseWSDL):
         "billingPlanCampaignCode",
         "billingPlanCampaignId",
         "billingPlanHistory",
-    ],}
+    ],
+    '13.0': [
+        "VID",
+        "merchantAutoBillId",
+        "account",
+        "billingPlan",
+        "paymentMethod",
+        "currency",
+        "customerAutoBillName",
+        "status",
+        "startTimestamp",
+        "endTimestamp",
+        "items",
+        "sourceIp",
+        "billingStatementIdentifier",
+        "billingDay",
+        "minimumCommitment",
+        "merchantAffiliateId",
+        "merchantAffiliateSubId",
+        "warnOnExpiration",
+        "nextBilling",
+        "nameValues",
+        "credit",
+        "statementFormat",
+        "invoiceTerms",
+        "statementOffset",
+        "statementTemplateId",
+        "billingPlanCampaignCode",
+        "billingPlanCampaignId",
+        "mandate"
+    ]
+    }
 
     def __init__(self, **kwargs):
         super(AutoBill, self).__init__(**kwargs)
 
-    def update(self, duplicateBehavior=None, validatePaymentMethod=None, minChargebackProbability=None,
+    def update_old(self, duplicateBehavior=None, validatePaymentMethod=None, minChargebackProbability=None,
                ignoreAvsPolicy=None, ignoreCvnPolicy=None, campaignCode=None, dryrun=None):
+        # For version <= 8
         auth = get_authentication()
 
         call_params = {
@@ -511,7 +714,32 @@ class AutoBill(BaseWSDL):
         ret = soap.call('AutoBill', 'update', inputs)
         return ret
 
-    def addCapaign(self, product=None, item=None, applyToBillingPlan=None, capaignCode=None, dryrun=None):
+    def update(self, immediateAuthFailurePolicy=None, validateForFuturePayment=None, minChargebackProbability=None,
+               ignoreAvsPolicy=None, ignoreCvnPolicy=None, campaignCode=None, dryrun=None):
+        # For version 13
+        auth = get_authentication()
+
+        call_params = {
+            'auth': auth,
+            'autobill': self.to_dict(),
+            'immediateAuthFailurePolicy': immediateAuthFailurePolicy,
+            'validateForFuturePayment': validateForFuturePayment,
+            'minChargebackProbability': minChargebackProbability,
+            'ignoreAvsPolicy': ignoreAvsPolicy,
+            'ignoreCvnPolicy': ignoreCvnPolicy,
+            'campaignCode': campaignCode,
+            'dryrun': dryrun,
+        }
+
+        inputs = {
+            'parameters': call_params
+        }
+
+        soap = CallClient()
+        ret = soap.call('AutoBill', 'update', inputs)
+        return ret
+
+    def addCampaign(self, product=None, item=None, applyToBillingPlan=None, campaignCode=None, dryrun=None):
         auth = get_authentication()
 
         call_params = {
@@ -520,7 +748,7 @@ class AutoBill(BaseWSDL):
             'product': product,
             'item': item,
             'applyToBillingPlan': applyToBillingPlan,
-            'capaignCode': capaignCode,
+            'campaignCode': campaignCode,
             'dryrun': dryrun,
         }
 

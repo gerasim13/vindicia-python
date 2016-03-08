@@ -1,4 +1,5 @@
 from suds.client import Client
+from suds.plugin import MessagePlugin
 
 import vindicia
 
@@ -16,6 +17,14 @@ def get_list_attr(vin_object):
     if type(vin_object._list_attr) == dict:
         return vin_object._list_attr[str(vindicia.VERSION)]
     return vin_object._list_attr
+
+
+class LogPlugin(MessagePlugin):
+    def sending(self, context):
+        print(str(context.envelope))
+
+    def received(self, context):
+        print(str(context.reply))
 
 
 class BaseWSDL(object):
@@ -48,7 +57,10 @@ class CallClient(object):
         try:
             if not vindicia.VIN_SOAP_HOST:
                 vindicia.get_soap_host()
-            client = Client(url=wsdl_file, location=vindicia.VIN_SOAP_HOST)
+            plugins = []
+            if vindicia.DEBUG:
+                plugins.append(LogPlugin())
+            client = Client(url=wsdl_file, location=vindicia.VIN_SOAP_HOST, plugins=plugins)
             call = getattr(client.service, action)
             response = call(**inputs['parameters'])
             if response:
