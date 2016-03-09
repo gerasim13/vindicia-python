@@ -45,11 +45,11 @@ VIN_SOAP_WSDL_PATH = os.path.join(os.path.dirname(__file__), 'wsdl')
 
 
 def get_soap_host():
-    environement = vindicia.ENVIRONMENT
-    if environement == "Production":
+    environment = vindicia.ENVIRONMENT
+    if environment == "Production":
         vindicia.VIN_SOAP_HOST = "https://soap.vindicia.com"
     else:
-        vindicia.VIN_SOAP_HOST = "https://soap.{}.sj.vindicia.com".format(environement)
+        vindicia.VIN_SOAP_HOST = "https://soap.{}.sj.vindicia.com".format(environment)
 
 """
 This should be enabled when I figure out about serialization of objects in some of the methods such as Transaction.score
@@ -853,6 +853,23 @@ class AutoBill(BaseWSDL):
         soap = CallClient()
 
         ret = soap.call('AutoBill', 'finalizePayPalAuth', inputs)
+        return ret
+
+    def finalize_customer_action(self, transactionVid):
+        auth = get_authentication()
+
+        call_params = {
+            'auth': auth,
+            'transactionVid': transactionVid,
+        }
+
+        inputs = {
+            'parameters': call_params
+        }
+
+        soap = CallClient()
+
+        ret = soap.call('AutoBill', 'finalizeCustomerAction', inputs)
         return ret
 
     def fetch_delta_since(self, timestamp, page=0, page_size=100, end_timestamp=None):
