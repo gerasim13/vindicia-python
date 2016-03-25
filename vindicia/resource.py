@@ -68,6 +68,7 @@ class CallClient(object):
                 if resp_return and getattr(resp_return, 'returnCode', None):
                     return_data['return_code'] = int(resp_return.returnCode)
                     return_data['return_string'] = resp_return.returnString
+                    return_data['soap_id'] = getattr(resp_return, 'soapId', None)
                     return_data['data'] = response
                     return_data['completed'] = True if resp_return.returnCode == '200' else False
                     return return_data
