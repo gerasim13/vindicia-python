@@ -12,7 +12,7 @@ Please see the Vindicia API documentation for more information:
 
 """
 
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 
 USER = None
 """The SOAP api client user to authenticated against."""
@@ -240,6 +240,23 @@ class Account(BaseWSDL):
         soap = CallClient()
 
         ret = soap.call('Account', 'makePayment', inputs)
+        return ret
+
+    def grant_entitlement(self, entitlement):
+        auth = get_authentication()
+
+        call_params = {
+            'auth': auth,
+            'account': self.to_dict(),
+            'entitlement': entitlement.to_dict()
+        }
+
+        inputs = {
+            'parameters': call_params
+        }
+
+        soap = CallClient()
+        ret = soap.call('Account', 'grantEntitlement', inputs)
         return ret
 
 
