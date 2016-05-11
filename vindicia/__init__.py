@@ -12,7 +12,7 @@ Please see the Vindicia API documentation for more information:
 
 """
 
-__version__ = '0.0.8'
+__version__ = '0.0.9'
 
 USER = None
 """The SOAP api client user to authenticated against."""
@@ -535,6 +535,18 @@ class HostedPage(BaseWSDL):
 
     def __init__(self, **kwargs):
         super(HostedPage, self).__init__(**kwargs)
+
+
+class MerchantAcceptedPayment(BaseWSDL):
+    _list_attr = [
+        "paymentType",
+        "amount",
+        "currency",
+        "account"
+    ]
+
+    def __init__(self, **kwargs):
+        super(MerchantAcceptedPayment, self).__init__(**kwargs)
 
 
 class AutoBillItem(BaseWSDL):
