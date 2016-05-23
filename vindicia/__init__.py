@@ -845,7 +845,7 @@ class AutoBill(BaseWSDL):
         ret = soap.call('AutoBill', 'upgrade', inputs)
         return ret
 
-    def cancel(self, disentitle=None, force=None, settle=None):
+    def cancel(self, disentitle=None, force=None, settle=None, sendCancellationNotice=True):
 
         auth = get_authentication()
 
@@ -855,6 +855,7 @@ class AutoBill(BaseWSDL):
             'disentitle': disentitle,
             'force': force,
             'settle': settle,
+            'sendCancellationNotice': sendCancellationNotice,
         }
 
         inputs = {
