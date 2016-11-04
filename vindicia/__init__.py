@@ -12,7 +12,7 @@ Please see the Vindicia API documentation for more information:
 
 """
 
-__version__ = '0.0.10'
+__version__ = '0.0.11'
 
 USER = None
 """The SOAP api client user to authenticated against."""
@@ -549,6 +549,29 @@ class MerchantAcceptedPayment(BaseWSDL):
         super(MerchantAcceptedPayment, self).__init__(**kwargs)
 
 
+class CarrierBilling(BaseWSDL):
+    _list_attr = [
+        "phoneNumber",
+        "carrierId",
+        "currency"
+    ]
+
+    def __init__(self, **kwargs):
+        super(CarrierBilling, self).__init__(**kwargs)
+
+
+class PhoneNumber(BaseWSDL):
+    _list_attr = [
+        "areaCode",
+        "countryCode",
+        "localNumber",
+        "rawInput"
+    ]
+
+    def __init__(self, **kwargs):
+        super(PhoneNumber, self).__init__(**kwargs)
+
+
 class AutoBillItem(BaseWSDL):
     _list_attr = {'4.3': [
         "merchantAutoBillItemId",
@@ -592,6 +615,29 @@ class AutoBillItem(BaseWSDL):
         "transitionedToAutoBillItemVid"
     ],
     '13.0': [
+        "merchantAutoBillItemId",
+        "VID",
+        "index",
+        "product",
+        "amount",
+        "currency",
+        "ratePlan",
+        "nameValues",
+        "quantity",
+        "token",
+        "cycles",
+        "cyclesRemaining",
+        "addedDate",
+        "removedDate",
+        "startDate",
+        "campaignCode",
+        "campaignId",
+        "transitionedFromMerchantAutoBillItemId",
+        "transitionedToMerchantAutoBillItemId",
+        "transitionedFromAutoBillItemVid",
+        "transitionedToAutoBillItemVid"
+    ],
+    '18.0': [
         "merchantAutoBillItemId",
         "VID",
         "index",
@@ -712,6 +758,38 @@ class AutoBill(BaseWSDL):
         "billingPlanCampaignCode",
         "billingPlanCampaignId",
         "mandate"
+    ],
+    '18.0': [
+        "VID",
+        "merchantAutoBillId",
+        "account",
+        "billingPlan",
+        "paymentMethod",
+        "currency",
+        "customerAutoBillName",
+        "status",
+        "startTimestamp",
+        "endTimestamp",
+        "items",
+        "sourceIp",
+        "billingStatementIdentifier",
+        "billingDay",
+        "minimumCommitment",
+        "merchantAffiliateId",
+        "merchantAffiliateSubId",
+        "warnOnExpiration",
+        "nextBilling",
+        "nameValues",
+        "credit",
+        "statementFormat",
+        "invoiceTerms",
+        "statementOffset",
+        "statementTemplateId",
+        "billingPlanCampaignCode",
+        "billingPlanCampaignId",
+        "mandate",
+        "billingState",
+        "cancelReason"
     ]
     }
 

@@ -62,7 +62,9 @@ class CallClient(object):
                 plugins.append(LogPlugin())
             client = Client(url=wsdl_file, location=vindicia.VIN_SOAP_HOST, plugins=plugins)
             call = getattr(client.service, action)
+            print 'Input parameters ===', inputs['parameters']
             response = call(**inputs['parameters'])
+            print 'Response ===', response
             if response:
                 resp_return = getattr(response, 'return', None)
                 if resp_return and getattr(resp_return, 'returnCode', None):
@@ -81,9 +83,8 @@ class CallClient(object):
                     return return_data
 
         except Exception, exc:
+            print 'EXCEPTION ===', exc 
             return_data['return_code'] = 499
             return_data['return_string'] = exc.message if exc.message != "" else "Undefined Error"
             return_data['completed'] = False
             return return_data
-
-
