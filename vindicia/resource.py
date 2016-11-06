@@ -1,6 +1,6 @@
 from suds.client import Client
 from suds.plugin import MessagePlugin
-
+from pprint import pprint
 import vindicia
 
 VIN_SOAP_TIMEOUT = 120
@@ -62,7 +62,7 @@ class CallClient(object):
                 plugins.append(LogPlugin())
             client = Client(url=wsdl_file, location=vindicia.VIN_SOAP_HOST, plugins=plugins)
             call = getattr(client.service, action)
-            print 'Input parameters ===', inputs['parameters']
+            pprint(inputs['parameters'])
             response = call(**inputs['parameters'])
             print 'Response ===', response
             if response:
@@ -83,7 +83,7 @@ class CallClient(object):
                     return return_data
 
         except Exception, exc:
-            print 'EXCEPTION ===', exc 
+            print 'EXCEPTION ===', exc
             return_data['return_code'] = 499
             return_data['return_string'] = exc.message if exc.message != "" else "Undefined Error"
             return_data['completed'] = False

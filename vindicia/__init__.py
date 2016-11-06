@@ -553,7 +553,8 @@ class CarrierBilling(BaseWSDL):
     _list_attr = [
         "phoneNumber",
         "carrierId",
-        "currency"
+        "currency",
+        "paymentProvider"
     ]
 
     def __init__(self, **kwargs):
