@@ -566,7 +566,8 @@ class PhoneNumber(BaseWSDL):
         "areaCode",
         "countryCode",
         "localNumber",
-        "rawInput"
+        "rawInput",
+        "phoneType"
     ]
 
     def __init__(self, **kwargs):
