@@ -982,6 +982,24 @@ class AutoBill(BaseWSDL):
         ret = soap.call('AutoBill', 'finalizeCustomerAction', inputs)
         return ret
 
+    def finalize_carrier_billing(self, transactionVid, confirmationCode):
+        auth = get_authentication()
+
+        call_params = {
+            'auth': auth,
+            'transactionVid': transactionVid,
+            'confirmationCode': confirmationCode
+        }
+
+        inputs = {
+            'parameters': call_params
+        }
+
+        soap = CallClient()
+
+        ret = soap.call('AutoBill', 'finalizeCarrierBilling', inputs)
+        return ret
+
     def fetch_delta_since(self, timestamp, page=0, page_size=100, end_timestamp=None):
         auth = get_authentication()
 
