@@ -1,6 +1,5 @@
 from suds.client import Client
 from suds.plugin import MessagePlugin
-
 import vindicia
 
 VIN_SOAP_TIMEOUT = 120
@@ -85,5 +84,3 @@ class CallClient(object):
             return_data['return_string'] = exc.message if exc.message != "" else "Undefined Error"
             return_data['completed'] = False
             return return_data
-
-
